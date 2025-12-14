@@ -236,9 +236,9 @@
                   :transit (some->
                             (formats/generate-transit input)
                             println)
-                  :fressian (some->
-                             (formats/generate-fressian input)
-                             print)
+                  :fressian (do
+                              (some-> input formats/generate-fressian print)
+                              (flush))
                   :yaml (some->
                          input
                          (formats/generate-yaml (not no-pretty))
