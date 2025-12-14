@@ -232,3 +232,16 @@
   (is (= "true\n" (jet "\"true\"" "-t" "parse-boolean")))
   (is (= "0.5\n" (jet "\"0.5\"" "-t" "parse-double")))
   (is (= "#uuid \"00000000-0000-0000-0000-000000000000\"\n" (jet "\"00000000-0000-0000-0000-000000000000\"" "-t" "parse-uuid"))))
+
+(deftest fressian-test
+  (testing "fressian round-trip"
+    (let [fressian-output (jet "{:a 1}" "--from" "edn" "--to" "fressian")]
+      (is (= "{:a 1}\n"
+             (jet fressian-output "--from" "fressian" "--to" "edn")))
+      (is (= "{\"a\":1}\n"
+             (jet fressian-output "--from" "fressian" "--to" "json" "--no-pretty")))))
+  (testing "fressian with various data types"
+    (let [test-data "{:a 1 :b \"string\" :c [1 2 3] :d {:nested true}}"
+          fressian-output (jet test-data "--from" "edn" "--to" "fressian")]
+      (is (= (str test-data "\n")
+             (jet fressian-output "--from" "fressian" "--to" "edn" "--no-pretty"))))))

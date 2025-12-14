@@ -11,6 +11,7 @@
    [cognitect.transit :as transit]
    [fipp.edn :as fipp]
    [jet.data-readers]
+   [org.clojure.data.fressian :as fressian]
    [puget.printer :as puget]
    [rewrite-clj.zip :as z])
   (:import
@@ -114,3 +115,17 @@
 
 (defn generate-yaml [o pretty]
   (yaml/generate-string o :dumper-options {:flow-style (if pretty :block :auto)}))
+
+(defn fressian-reader []
+  (fressian/create-reader (ReaderInputStream. *in*)))
+
+(defn parse-fressian [rdr]
+  (try (fressian/read-object rdr)
+       (catch java.io.EOFException _
+         ::EOF)))
+
+(defn generate-fressian [o]
+  (let [bos (java.io.ByteArrayOutputStream. 1024)]
+    (with-open [writer (fressian/create-writer bos)]
+      (fressian/write-object writer o))
+    (String. (.toByteArray bos) "ISO-8859-1")))

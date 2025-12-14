@@ -4,7 +4,7 @@
 [![Clojars Project](https://img.shields.io/clojars/v/borkdude/jet.svg)](https://clojars.org/borkdude/jet)
 [![cljdoc badge](https://cljdoc.org/badge/borkdude/jet)](https://cljdoc.org/d/borkdude/jet/CURRENT)
 
-CLI to transform between [JSON](https://www.json.org/), [EDN](https://github.com/edn-format/edn), [YAML](https://yaml.org/) and [Transit](https://github.com/cognitect/transit-format) using Clojure.
+CLI to transform between [JSON](https://www.json.org/), [EDN](https://github.com/edn-format/edn), [YAML](https://yaml.org/), [Transit](https://github.com/cognitect/transit-format), and [Fressian](https://github.com/clojure/data.fressian) using Clojure.
 
 ## Quickstart
 
@@ -16,7 +16,7 @@ $ echo '{:a 1}' | jet --to json
 
 ## Rationale
 
-This is a command line tool to transform between JSON, EDN and Transit using
+This is a command line tool to transform between JSON, EDN, YAML, Transit, and Fressian using
 Clojure. It runs as a GraalVM binary with fast startup time which makes it
 suited for shell scripting. It may seem familiar to users of `jq`.
 
@@ -116,8 +116,8 @@ $ echo '[1 2 3]' | clj -Tjet exec :colors true :func '"#(-> % first inc)"'
 `jet` supports the following options:
 
 ``` shell
-  -i, --from            [ edn | transit | json | yaml ] defaults to edn.
-  -o, --to              [ edn | transit | json | yaml ] defaults to edn.
+  -i, --from            [ edn | transit | json | yaml | fressian ] defaults to edn.
+  -o, --to              [ edn | transit | json | yaml | fressian ] defaults to edn.
   -t, --thread-last                                     implicit thread last
   -T, --thread-first                                    implicit thread first
   -f, --func                                            a single-arg Clojure function, or a path to a file that contains a function, that transforms input.
@@ -154,6 +154,9 @@ a: 1
 
 $ echo '{"a": 1}' | jet -i json -o transit
 ["^ ","a",1]
+
+$ echo '{:a 1}' | jet --to fressian | jet --from fressian --to json
+{"a":1}
 
 $ echo '{:a {:b {:c 1}}}' | jet --thread-last ':a :b :c'
 1
