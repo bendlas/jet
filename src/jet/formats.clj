@@ -125,7 +125,7 @@
          ::EOF)))
 
 (defn generate-fressian [o]
-  (let [bos (java.io.ByteArrayOutputStream.)]
+  (let [bos (java.io.ByteArrayOutputStream. 1024)]
     (with-open [writer (fressian/create-writer bos)]
       (fressian/write-object writer o))
     (String. (.toByteArray bos) "ISO-8859-1")))
