@@ -122,11 +122,11 @@
 (def cli-spec
   {:from            {:coerce :keyword
                      :alias  :i
-                     :ref "[ edn | transit | json | yaml ]"
+                     :ref "[ edn | transit | json | yaml | fressian ]"
                      :desc   "defaults to edn."}
    :to              {:coerce :keyword
                      :alias  :o
-                     :ref "[ edn | transit | json | yaml ]"
+                     :ref "[ edn | transit | json | yaml | fressian ]"
                      :desc   "defaults to edn."}
    :colors          {:ref  "[ auto | true | false]"
                      :desc "use colored output while pretty-printing. Defaults to auto."}
@@ -204,12 +204,14 @@
       (let [reader (case from
                      :json (formats/json-parser)
                      :transit (formats/transit-reader)
+                     :fressian (formats/fressian-reader)
                      :yaml nil
                      :edn nil)
             next-val (case from
                        :edn #(formats/parse-edn edn-reader-opts *in*)
                        :json #(formats/parse-json reader keywordize)
                        :transit #(formats/parse-transit reader)
+                       :fressian #(formats/parse-fressian reader)
                        :yaml #(formats/parse-yaml *in* keywordize))
             collected (when collect (vec (take-while #(not= % ::formats/EOF)
                                                      (repeatedly next-val))))
@@ -234,6 +236,9 @@
                   :transit (some->
                             (formats/generate-transit input)
                             println)
+                  :fressian (some->
+                             (formats/generate-fressian input)
+                             print)
                   :yaml (some->
                          input
                          (formats/generate-yaml (not no-pretty))

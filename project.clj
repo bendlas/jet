@@ -18,7 +18,8 @@
                  [org.babashka/cli "0.8.58"]
                  [camel-snake-kebab "0.4.3"]
                  [com.rpl/specter "1.1.4"]
-                 [rewrite-clj/rewrite-clj "1.1.47"]]
+                 [rewrite-clj/rewrite-clj "1.1.47"]
+                 [org.clojure/data.fressian "1.0.0"]]
   :profiles {:test {:dependencies [[clj-commons/conch "0.9.2"]]}
              :uberjar {:dependencies [[com.github.clj-easy/graal-build-time "0.1.4"]]
                        :global-vars {*assert* false}
